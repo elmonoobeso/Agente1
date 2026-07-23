@@ -1,5 +1,5 @@
 import numpy as np
-stock_negativo=[]
+
 class Agente:
     def __init__(self,ventas,cod_estupes,margen_precio=0.25):
         self.ventas=None
@@ -9,9 +9,21 @@ class Agente:
     def cargar(self,ruta_archivo="ventas_mes.csv"):
       self.ventas=np.genfromtxt("ventas_mes.csv",delimiter=",",dtype=None,encoding="utf-8")  
 
-    def detectar_stock_negativo(self,ventas):
+    def detectar_stock_negativo(self):
        columna_stock=self.ventas["stock actual"]
-       if columna_stock<0:
+       negativo=columna_stock<0
+       return dict(ventas[nombre_medicamento],ventas[negativo],ventas[codigo_nacional])#lo pongo como dict y el codigo nacional como key?no quiero negativo quiero nombres y cn
+
+    def abuso_estupes(self,limite_estupes):
+       limite_estupes=10
+       abusador=np.isin(self.ventas["cod_estupes"],self.cod_estupes)
+       sub=self.ventas[abusador]
+       clientes=np.unique(sub["id_paciente"])
+       suma=np.sum(clientes)
+
+       
+        
+    
           
     
        
