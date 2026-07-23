@@ -1,5 +1,6 @@
 import numpy as np
 lista_abuso=[]
+lista_precio_especialidades=[]
 
 class Agente:
     def __init__(self,ventas,cod_estupes):
@@ -32,7 +33,15 @@ class Agente:
        return lista_abuso
 
     def anomalias_precio(self, margen_precio_para=0.25,margen_precio=0.05):
-       if self.ventas["codigo_nacional"].startswith(6,7) and np.std(self.ventas["puc"])>0.25
+       ventas_codigo_med=(self.ventas["codigo_nacional"].astype(str))
+       for venta in ventas_codigo_med:
+          tabla_puc=ventas_codigo_med[ventas_codigo_med["puc"]==venta]
+          precio_max=np.max(ventas_codigo_med["puc"])#podria poner venta?
+          precio_min=np.min(ventas_codigo_med["puc"])#podria 
+          codigo_n=ventas_codigo_med["codigo_nacional"].astype(str)
+          if np.std(ventas_codigo_med["puc"],ddof=0)>margen_precio_para and codigo_n.startswith(("6","7")):
+             lista_precio_especialidades.append({"codigo_nacional":codigo_n,"Precio_max":precio_max,"Precio_min":precio_min})
+      return lista_precio_especialidades
           
 
        
