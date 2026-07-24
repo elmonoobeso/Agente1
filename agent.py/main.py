@@ -33,9 +33,23 @@ class Agente:
        return lista_abuso
 
     def anomalias_precio(self, margen_precio_para=0.25,margen_precio=0.05):
-       ventas_codigo_med=(self.ventas["codigo_nacional"].astype(str))
-       for venta in ventas_codigo_med:
-          tabla_puc=ventas_codigo_med[ventas_codigo_med["puc"]==venta]
+       nombre_med=np.array(self.ventas["nombre_medicamento"],dtype=str)
+       codigo_med=np.array(self.ventas["codigo_nacional"].astype(str))
+       precio_med=np.array(self.ventas["puc"])
+       codigo_med_unico=np.unique(codigo_med)
+       for venta in codigo_med_unico:
+         filtro=venta==codigo_med
+         precio_filtrado=precio_med[codigo_med]
+         if 
+         
+         
+
+
+
+         
+         
+
+         tabla_puc=ventas_codigo_med[ventas_codigo_med["puc"]==venta]
           precio_max=np.max(ventas_codigo_med["puc"])#podria poner venta?
           precio_min=np.min(ventas_codigo_med["puc"])#podria 
           codigo_n=ventas_codigo_med["codigo_nacional"].astype(str)
