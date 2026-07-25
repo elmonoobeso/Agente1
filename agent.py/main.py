@@ -1,20 +1,32 @@
 import numpy as np
 lista_abuso=[]
-lista_precio_especialidades=[]
+lista_precio=[]
+lista_stock_negativo=[]
 
 class Agente:
     def __init__(self,ventas,cod_estupes):
-        self.ventas=None
+        self.ventas=ventas
         self.cod_estupes= cod_estupes or {"N02AA01","N02AA02","N02AA03","N02AA05","N02AA59","N02AB02","N02AB03","N02AC03","N02AE01","N02AX02","N02AX06","N01AH01","N01AH02","N01AH03","N01AH06"}
-        self.margen_precio=margen_precio
+       
 
     def cargar(self,ruta_archivo="ventas_mes.csv"):
-      self.ventas=np.genfromtxt("ventas_mes.csv",delimiter=",",dtype=None,encoding="utf-8")  
+      self.ventas=np.genfromtxt("ventas_mes.csv",delimiter=",",dtype=None,names=True, encoding="utf-8")  
 
     def detectar_stock_negativo(self):
-       columna_stock=self.ventas["stock actual"]
-       negativo=columna_stock<0
-       return dict(ventas[nombre_medicamento],ventas[negativo],ventas[codigo_nacional])#lo pongo como dict y el codigo nacional como key?no quiero negativo quiero nombres y cn
+      nombre_med=np.array(self.ventas["nombre_medicamento"],dtype=str)
+      codigo_med=np.array(self.ventas["codigo_nacional"],dtype=str)
+      stocks=np.array(self.ventas["stock_actual"], dtype=int)
+      codigos_unicos= np.unique(codigo_med)
+      
+        for venta in ultimo_codigo:
+                filtro=venta==ultimo_codigo
+                stock_filtrado=stocks[filtro][-1]
+                if stock_filtrado<0:
+                   ultimo_nombre=nombre_med[filtro][-1]
+                   lista_stock_negativo.append({"nombre_medicamento":ultimo_nombre,"Codigo medicamento":venta,"stock":int(ultimo_stock)})
+      
+      return lista_stock_negativo
+
 
     def abuso_estupes(self,limite_estupes=10):
        
@@ -26,37 +38,47 @@ class Agente:
           suma = np.sum(ventas_cliente["cantidad"])
           
           if suma>limite_estupes:
-             meds_unicos = ", ".join(ventas_cliente["nombre_medicamento"].unique())
-             codigo_med=(ventas_cliente["codigo_nacional"].astype(str)
-             cod_med=",".join(codigo_med).unique())  
+             meds_unicos = ", ".join(np.unique(ventas_cliente["nombre_medicamento"]))
+             cods_unicos = ", ".join(
+                np.unique(np.array(ventas_cliente["codigo_nacional"], dtype=str)))
              lista_abuso.append({"id_paciente":cliente,"nombre medicamento":meds_unicos,"cantidad":suma,"codigo_nacional":cod_med})
        return lista_abuso
 
     def anomalias_precio(self, margen_precio_para=0.25,margen_precio=0.05):
        nombre_med=np.array(self.ventas["nombre_medicamento"],dtype=str)
-       codigo_med=np.array(self.ventas["codigo_nacional"].astype(str))
+       codigo_med=np.array(self.ventas["codigo_nacional"],dtype=str)
        precio_med=np.array(self.ventas["puc"])
        codigo_med_unico=np.unique(codigo_med)
        for venta in codigo_med_unico:
          filtro=venta==codigo_med
-         precio_filtrado=precio_med[codigo_med]
-         if 
-         
-         
-
-
-
-         
-         
-
-         tabla_puc=ventas_codigo_med[ventas_codigo_med["puc"]==venta]
-          precio_max=np.max(ventas_codigo_med["puc"])#podria poner venta?
-          precio_min=np.min(ventas_codigo_med["puc"])#podria 
-          codigo_n=ventas_codigo_med["codigo_nacional"].astype(str)
-          if np.std(ventas_codigo_med["puc"],ddof=0)>margen_precio_para and codigo_n.startswith(("6","7")):
-             lista_precio_especialidades.append({"codigo_nacional":codigo_n,"Precio_max":precio_max,"Precio_min":precio_min})
-      return lista_precio_especialidades
+         precio_filtrado=precio_med[filtro]
+         if venta.startswith(("6","7")):
+            umbral=margen_precio
+         else:
+            umbral=margen_precio_para
+          media=np.mean(precio_filtrado)
           
+            if len(precio_filtrado)<=1:#evitar que de error en los productos con un unico precio
+              variacion=np.std(precio_filtrado, ddof=1/) media#cual es la razon por la que se compara con la media, ya no hay que pasarlo a porcentaje???
+              if variacion>umbral:
+                lista_precio.append({"nombre":nombre_med[filtro][0],"codigo nacional":venta,"Precio max":np.max(precio_filtrado),"Precio min":np.min(precio_filtrado),"variacion":round(variacion*100,2)})
+      return lista_precio
+
+       
+      
+         
+          
+        
+          
+         
+         
+
+
+
+         
+         
+
+        
 
        
         
