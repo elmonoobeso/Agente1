@@ -10,7 +10,7 @@ class Agente:
        
 
     def cargar(self,ruta_archivo="ventas_mes.csv"):
-      self.ventas=np.genfromtxt("ventas_mes.csv",delimiter=",",dtype=None,names=True, encoding="utf-8")  
+      self.ventas=np.genfromtxt(ruta_archivo,delimiter=",",dtype=None,names=True, encoding="utf-8")  
 
     def detectar_stock_negativo(self):
       nombre_med=np.array(self.ventas["nombre_medicamento"],dtype=str)
@@ -18,12 +18,12 @@ class Agente:
       stocks=np.array(self.ventas["stock_actual"], dtype=int)
       codigos_unicos= np.unique(codigo_med)
       
-      for venta in ultimo_codigo:
-         filtro=venta==ultimo_codigo
+      for venta in codigos_unicos:
+         filtro=codigo_med==venta
          stock_filtrado=stocks[filtro][-1]
          if stock_filtrado<0:
             ultimo_nombre=nombre_med[filtro][-1]
-            lista_stock_negativo.append({"nombre_medicamento":ultimo_nombre,"Codigo nacional":venta,"stock":int(ultimo_stock)})
+            lista_stock_negativo.append({"nombre_medicamento":ultimo_nombre,"codigo_nacional":venta,"stock":int(ultimo_stock)})
       
       return lista_stock_negativo
 
@@ -41,16 +41,17 @@ class Agente:
              meds_unicos = ", ".join(np.unique(ventas_cliente["nombre_medicamento"]))
              cods_unicos = ", ".join(
                 np.unique(np.array(ventas_cliente["codigo_nacional"], dtype=str)))
-             lista_abuso.append({"id_paciente":cliente,"nombre medicamento":meds_unicos,"cantidad":suma,"codigo_nacional":cods_unicos})
+             lista_abuso.append({"id_paciente":cliente,"nombre_medicamento":meds_unicos,"cantidad":suma,"codigo_nacional":cods_unicos})
        return lista_abuso
 
     def anomalias_precio(self, margen_precio_para=0.25,margen_precio=0.05):
+       lista_precio=[]
        nombre_med=np.array(self.ventas["nombre_medicamento"],dtype=str)
        codigo_med=np.array(self.ventas["codigo_nacional"],dtype=str)
-       precio_med=np.array(self.ventas["puc"])
+       precio_med=np.array(self.ventas["puc"],dtype=float)
        codigo_med_unico=np.unique(codigo_med)
        for venta in codigo_med_unico:
-         filtro=venta==codigo_med
+         filtro=codigo_med==venta
          precio_filtrado=precio_med[filtro]
          if venta.startswith(("6","7")):
             umbral=margen_precio
