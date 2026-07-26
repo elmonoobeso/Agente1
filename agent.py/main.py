@@ -41,7 +41,7 @@ class Agente:
              meds_unicos = ", ".join(np.unique(ventas_cliente["nombre_medicamento"]))
              cods_unicos = ", ".join(
                 np.unique(np.array(ventas_cliente["codigo_nacional"], dtype=str)))
-             lista_abuso.append({"id_paciente":cliente,"nombre medicamento":meds_unicos,"cantidad":suma,"codigo_nacional":cod_med})
+             lista_abuso.append({"id_paciente":cliente,"nombre medicamento":meds_unicos,"cantidad":suma,"codigo_nacional":cods_unicos})
        return lista_abuso
 
     def anomalias_precio(self, margen_precio_para=0.25,margen_precio=0.05):
@@ -58,7 +58,7 @@ class Agente:
             umbral=margen_precio_para
             media=np.mean(precio_filtrado)
           
-            if len(precio_filtrado)<=1:#evitar que de error en los productos con un unico precio
+            if len(precio_filtrado)>=1:#evitar que de error en los productos con un unico precio
               variacion=np.std(precio_filtrado, ddof=1)/ media 
               #cual es la razon por la que se compara con la media, ya no hay que pasarlo a porcentaje?
               if variacion>umbral:
