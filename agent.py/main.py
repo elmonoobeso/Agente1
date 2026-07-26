@@ -23,7 +23,7 @@ class Agente:
          stock_filtrado=stocks[filtro][-1]
          if stock_filtrado<0:
             ultimo_nombre=nombre_med[filtro][-1]
-            lista_stock_negativo.append({"nombre_medicamento":ultimo_nombre,"Codigo medicamento":venta,"stock":int(ultimo_stock)})
+            lista_stock_negativo.append({"nombre_medicamento":ultimo_nombre,"Codigo nacional":venta,"stock":int(ultimo_stock)})
       
       return lista_stock_negativo
 
@@ -70,11 +70,21 @@ import csv
     def extraer_listas(self,lista_stock_negativo,lista_abuso,lista_precio):
       ruta=Path("listas_agente")
       ruta.mkdir(parents=True, exist_ok=True)
-      ruta1=ruta/"lista_abuso.csv"
-      with open (ruta1,"w",newline="",encoding="utf-8") as abuso_file:
+      ruta_abuso=ruta/"lista_abuso.csv"
+      ruta_stock=ruta/"lista_stock_negativo.csv"
+      ruta_precio=ruta/"lista_precio.csv"
+      with open (ruta_abuso,"w",newline="",encoding="utf-8") as abuso_file:
          writer=csv.DictWriter(abuso_file, fieldnames=["id_paciente","nombre_medicamento","cantidad","codigo_nacional"])
          writer.writeheader()
          writer.writerows(lista_abuso)
+      with open (ruta_stock,"w",newline="",encoding="utf-8") as stock_file:
+         writer=csv.DictWriter(stock_file, fieldnames=["nombre_medicamento","codigo_nacional","stock"])
+         writer.writeheader()
+         writer.writerows(lista_stock_negativo)
+      with open (ruta_precio,"w",newline="",encoding="utf-8") as precio_file:
+         writer=csv.DictWriter(precio_file, fieldnames=["nombre","codigo_nacional","Precio max","Precio min","variacion"])
+         writer.writeheader()
+         writer.writerows(lista_precio)
 
    
    
