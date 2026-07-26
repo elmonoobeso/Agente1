@@ -18,12 +18,12 @@ class Agente:
       stocks=np.array(self.ventas["stock_actual"], dtype=int)
       codigos_unicos= np.unique(codigo_med)
       
-        for venta in ultimo_codigo:
-                filtro=venta==ultimo_codigo
-                stock_filtrado=stocks[filtro][-1]
-                if stock_filtrado<0:
-                   ultimo_nombre=nombre_med[filtro][-1]
-                   lista_stock_negativo.append({"nombre_medicamento":ultimo_nombre,"Codigo medicamento":venta,"stock":int(ultimo_stock)})
+      for venta in ultimo_codigo:
+         filtro=venta==ultimo_codigo
+         stock_filtrado=stocks[filtro][-1]
+         if stock_filtrado<0:
+            ultimo_nombre=nombre_med[filtro][-1]
+            lista_stock_negativo.append({"nombre_medicamento":ultimo_nombre,"Codigo medicamento":venta,"stock":int(ultimo_stock)})
       
       return lista_stock_negativo
 
@@ -56,14 +56,29 @@ class Agente:
             umbral=margen_precio
          else:
             umbral=margen_precio_para
-          media=np.mean(precio_filtrado)
+            media=np.mean(precio_filtrado)
           
             if len(precio_filtrado)<=1:#evitar que de error en los productos con un unico precio
-              variacion=np.std(precio_filtrado, ddof=1/) media#cual es la razon por la que se compara con la media, ya no hay que pasarlo a porcentaje???
+              variacion=np.std(precio_filtrado, ddof=1)/ media 
+              #cual es la razon por la que se compara con la media, ya no hay que pasarlo a porcentaje?
               if variacion>umbral:
                 lista_precio.append({"nombre":nombre_med[filtro][0],"codigo nacional":venta,"Precio max":np.max(precio_filtrado),"Precio min":np.min(precio_filtrado),"variacion":round(variacion*100,2)})
-      return lista_precio
+    return lista_precio
 
+from pathlib import Path
+import csv
+    def extraer_listas(self,lista_stock_negativo,lista_abuso,lista_precio):
+      ruta=Path("listas_agente")
+      ruta.mkdir(parents=True, exist_ok=True)
+      ruta1=ruta/"lista_abuso.csv"
+      with open (ruta1,"w",newline="",encoding="utf-8") as abuso_file:
+         writer=csv.DictWriter(abuso_file, fieldnames=["id_paciente","nombre_medicamento","cantidad","codigo_nacional"])
+         writer.writeheader()
+         writer.writerows(lista_abuso)
+
+   
+   
+   
        
       
          
