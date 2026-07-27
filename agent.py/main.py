@@ -1,10 +1,8 @@
 import numpy as np
-lista_abuso=[]
-lista_precio=[]
-lista_stock_negativo=[]
+
 
 class Agente:
-    def __init__(self,ventas,cod_estupes):
+    def __init__(self,ventas=None,cod_estupes=None):
         self.ventas=ventas
         self.cod_estupes= cod_estupes or {"N02AA01","N02AA02","N02AA03","N02AA05","N02AA59","N02AB02","N02AB03","N02AC03","N02AE01","N02AX02","N02AX06","N01AH01","N01AH02","N01AH03","N01AH06"}
        
@@ -13,6 +11,7 @@ class Agente:
       self.ventas=np.genfromtxt(ruta_archivo,delimiter=",",dtype=None,names=True, encoding="utf-8")  
 
     def detectar_stock_negativo(self):
+      lista_stock_negativo=[]
       nombre_med=np.array(self.ventas["nombre_medicamento"],dtype=str)
       codigo_med=np.array(self.ventas["codigo_nacional"],dtype=str)
       stocks=np.array(self.ventas["stock_actual"], dtype=int)
@@ -29,8 +28,9 @@ class Agente:
 
 
     def abuso_estupes(self,limite_estupes=10):
+       lista_abuso=[]
        
-       estupes=np.isin(self.ventas["cod_estupes"],self.cod_estupes)
+       estupes=np.isin(self.ventas["cod_estupes"],list(self.cod_estupes))
        sub=self.ventas[estupes]
        clientes=np.unique(sub["id_paciente"])
        for cliente in clientes:
@@ -53,17 +53,17 @@ class Agente:
        for venta in codigo_med_unico:
          filtro=codigo_med==venta
          precio_filtrado=precio_med[filtro]
-         if venta.startswith(("6","7")):
-            umbral=margen_precio
-         else:
-            umbral=margen_precio_para
+         if len(precio_filtrado)>1:
             media=np.mean(precio_filtrado)
-          
-            if len(precio_filtrado)>=1:#evitar que de error en los productos con un unico precio
-              variacion=np.std(precio_filtrado, ddof=1)/ media 
+            if venta.startswith(("6","7")):
+               umbral=margen_precio
+            else:
+               umbral=margen_precio_para
+            #calculo variacion
+               variacion=np.std(precio_filtrado, ddof=1)/ media 
               #cual es la razon por la que se compara con la media, ya no hay que pasarlo a porcentaje?
-              if variacion>umbral:
-                lista_precio.append({"nombre":nombre_med[filtro][0],"codigo nacional":venta,"Precio max":np.max(precio_filtrado),"Precio min":np.min(precio_filtrado),"variacion":round(variacion*100,2)})
+         if variacion>umbral:
+                  lista_precio.append({"nombre":nombre_med[filtro][0],"codigo_nacional":venta,"Precio max":np.max(precio_filtrado),"Precio min":np.min(precio_filtrado),"variacion":round(variacion*100,2)})
     return lista_precio
 
 from pathlib import Path
