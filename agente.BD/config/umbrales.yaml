@@ -1,0 +1,45 @@
+# Umbrales de los agentes. Cada uno indica su ORIGEN:
+#   PNT     = PNT SPD del COFM (enero 2023), con página. No cambiar sin revisar el PNT.
+#   interno = decisión de la farmacia. Se puede ajustar.
+
+preverificacion:            # Agente A
+  margen_caducidad_dias:
+    valor: 28
+    origen: "PNT p.19 (no aptos con caducidad inferior a 28 días)"
+  validez_maxima_dias:
+    valor: 14
+    origen: "PNT p.12 y p.21 (máx. 2 semanas desde el desemblistado)"
+
+lote:                       # Agente B
+  # sin umbrales numéricos por ahora
+
+seguimiento:                # Agente C
+  receta_urgente_dias:
+    valor: 7
+    origen: "interno (PNT p.16 pide renovar en plazo, sin fijar días)"
+  receta_renovar_dias:
+    valor: 14
+    origen: "interno"
+  devolucion_aviso_dias:
+    valor: 2
+    origen: "interno"
+  devolucion_escalar_dias:
+    valor: 7
+    origen: "interno"
+  adherencia_ultimos_blisteres:
+    valor: 3
+    origen: "interno"
+  adherencia_blisteres_con_fallos:
+    valor: 2
+    origen: "interno"
+  adherencia_alveolos_un_blister:
+    valor: 3
+    origen: "interno"
+  test_adherencia_max_dias:
+    valor: 180
+    origen: "interno (el PNT no fija plazo)"
+
+organizador:
+  reintentos:
+    valor: 1
+    origen: "interno"

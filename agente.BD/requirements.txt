@@ -1,0 +1,5 @@
+mysql-connector-python==26.10.0
+PyYAML==6.0.3
+python-dotenv==1.2.4
+Jinja2==3.1.6
+pytest==9.2.0
